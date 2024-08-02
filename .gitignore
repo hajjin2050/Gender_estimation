@@ -1,0 +1,6 @@
+__pycache__
+.vscode
+mlruns
+runs
+PETA_gender_classification_dataset_v1
+mlflow.db
