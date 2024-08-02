@@ -2,7 +2,7 @@
 
 ## **1.프로젝트 개요**
 
-본 프로젝튼느 PETA(PEdsTrian Attribute) 데이터셋을 활용하여 성별을 분류하는 모델을 구축하고, Ray Tune 을 사용하여 하이퍼파라미터 튜닝을 자동화하는 것을 목표로 하였고, 기존에 널리 사용되는 분류모델을 기반으로 정량적인 지표로는 Prec,Recall,F1-score,CM(confusion Matrix), 정성적인 지표로는 Grad-CAM을 활용하여 모델 예측 근거를 시각화 하였음.
+본 프로젝느 PETA(PEdsTrian Attribute) 데이터셋을 활용하여 성별을 분류하는 모델을 구축하고, Ray Tune 을 사용하여 하이퍼파라미터 튜닝을 자동화하는 것을 목표로 하였고, 기존에 널리 사용되는 분류모델을 기반으로 정량적인 지표로는 Prec,Recall,F1-score,CM(confusion Matrix), 정성적인 지표로는 Grad-CAM을 활용하여 모델 예측 근거를 시각화 하였음.
 
 ## 2. 환경설정
 
