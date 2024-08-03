@@ -256,7 +256,7 @@ class Trainable(tune.Trainable):
         self.run_name = f"{config['model_name']}_{current_time}_{unique_id}"
         
         # 데이터 로더 초기화
-        self.train_loader, self.val_loader = get_data_loaders(data_dir='/workspace/PETA_gender_classification_dataset_v1', batch_size=config["batch_size"])
+        self.train_loader, self.val_loader = get_data_loaders(data_dir=args.data_dir, batch_size=config["batch_size"])
         
         # MLflow 설정
         mlflow.set_tracking_uri(config["mlflow"]["tracking_uri"])
