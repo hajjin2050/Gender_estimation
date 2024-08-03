@@ -1,10 +1,11 @@
 # Gender Classifiaction with PETA dataset
 
-![썸네일 이미지](./data/image.webp)
-
 ## **1.프로젝트 개요**
 
-본 프로젝트 PETA(PEdsTrian Attribute) 데이터셋을 활용하여 성별을 분류하는 모델을 학습,추론,테스트 하는 프로세스를 구축하고 각 실험을 정리하고 
+본 프로젝트 PETA(PEdsTrian Attribute) 데이터셋을 활용하여 성별을 분류하는 모델을 학습,추론,테스트 하는 프로세스를 구축하고 각 실험을 정리하는 로직을 구현하였음.
+
+- 학습 : Pytorch 2.1
+- 파라미터 및 관리 도구 : Ray tune, Mlflow
 
 ## 2. 환경설정
 
@@ -14,6 +15,9 @@
 
 ```
 pip install -r requirements.txt
+
+# 이 경우 mlflow 서버를 수동으로 켜야하기에 아래 명령어를 추가로 입력해주세요
+./start_mlflow_server.sh
 ```
 
 #### Case B.Dockerfile [recommend]
@@ -37,35 +41,6 @@ docker build -t hajjin_like_spacevision:v1 .
 ```
 docker run -it --gpus all --ipc==host -v ./:/data --name hajjin_estimation  hajjin_like_spacevision:v1
 ./start_mlflow_server.sh &
-```
-
-### 2_2.프로젝트 디렉토리 구조
-
-```
-workspace/
-├── config/
-│   ├── config_efficientNetB5.json
-│   ├── config_resnet101.json
-│   └── config_densenet121.json
-├── data/
-│   ├── dataloader.py
-│   ├── dataset.py
-│   ├── dataset_source.py
-│   ├── grad_cam.py
-
-│   ├── scheme.py
-
-│   └── PETA_gender_classification_dataset_v1/
-├── model/
-│   ├── base_model.py
-│   ├── CustomEfficientNetB5.py
-│   ├── resnet101.py
-│   └── densenet121.py
-├── tools/
-│   ├── train_loop.py
-│   └── utils.py
-│   └── train.py
-└── requirements.txt
 ```
 
 ## 3.데이터 셋
@@ -101,10 +76,19 @@ python tools/train.py --config /workspace/config/config_resnet101.json
 
 #### 구성
 
-- 모델 학습 데이터
-- 학습에 필요한 하이퍼 파라미터, 모델, 데이터 정보,  mlflow 설정을  config 파일로 작성하여 학습을 진행
-- 모델의 경우 model 폴더에 구축하여 모델이름을 Config 에 설정
-- 학습 중 사용되는 Config는 파라미터 값을 명시하여 checkpoint 와 함께 저장해서 버전관리에 사용함
+- 모델 학습 코드
+
+  - config 폴더에 작성한 json  파일을 활용하여 학습 코드 재사용 용이하게 구축함
+  - 각 실험 별로 mlflow에 업로드되는 run_name과 동일한 폴더가 생성되며 아래와 같은 파일들이 아웃풋으로 산출됨
+
+    - config.json : 실험 상세 파라미터
+    - confusion_matrix _x.png : 에폭마다 confusion matrix 이미지 저장
+    - heatmap_overlay_epoch_x.png : 정성적 평가를 위한 모델의 마지막 레이어 통과할 때  heatmap 을 저장
+    - metrics.log : 에폭마다 검증 데이터 셋에 대한 prec,recall,f1-score 기록
+    - model_epoch_x.pth : 모델 체크포인트 저장
+  - mlflow에도 같은 내용이 올라가지만 버전관리와 백업용도로 로컬('/workspace/runs')에도 저장하고있음
+  - 학습 완료 이후 val_f1score를 기준으로 가장 좋은 모델을 선정하여 mlflow에 registration 함.
+    -> val_f1score는 기준이며 각 실험마다 Confusion Matrix, metric.log를 분석하여 최고의 모델을 산출함(아직은 수작업)
 
 #### IO(Input/Output)
 
@@ -126,7 +110,6 @@ python test.py --config /workspace/config/config_efficientNetB5.json --model /pa
 
 #### 구성
 
-- 모델 테스트 데이터(GT가 있어야 함)
 - 구축된 테스트 데이터 셋을 활용하여 모델의 평가지표(Prec, Recall, F1-score)와 각 데이터 추론결과 산출
 - 학습떄 사용한 config(['model_name']활용), model,test데이터 경로를 필요로함
 
@@ -150,7 +133,6 @@ python inference.py --config /workspace/config/config_efficientNetB5.json --mode
 
 #### 구성
 
-- 모델 추론 데이터(GT없는 추론용 데이터_ demo폴더에 있음)
 - 훈련된 모델을 사용하여 새로운 이미지 또는 이미지 디렉토리에 대해 예측 수행
 - 학습 때 사용된 config,model, 입력이미지 경로를 필요로 함
 
@@ -165,15 +147,3 @@ python inference.py --config /workspace/config/config_efficientNetB5.json --mode
 - 데이터 전처리 : 입력 이미지 또는 디렉토리 내의 이미지 전처리
 - 추론 수행 : 모델을 사용하여 각 이미지에 대한 추론 수행
 - 결과 저장 : 각 이미지에 대한 예측 결과를 포함한 결과를 엑셀 파일로 저장
-
-## 5.Dependencies
-
-이 프로젝트는 다음과 같은 주요 라이브러리에 의존합니다.
-
-- Python 3.x
-- Pytorch >2.0
-- MLflow
-- Ray Tune
-- pandas
-- scikit-learn
-- Pillow
