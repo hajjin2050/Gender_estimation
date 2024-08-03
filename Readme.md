@@ -25,15 +25,14 @@ pip install -r requirements.txt
 **step1**.git clone this repo
 
 ```
-git clone -b main https://github.com/hajjin2050/Gender_estimation.git
+git clone https://github.com/hajjin2050/Gender_estimation.git
 cd Gender_estimation
 ```
 
 **step2**.Building Docker image
 
 ```
-cd docker
-docker build -t hajjin_like_spacevision:v1 .
+docker build -t hajjin_like_spacevision:v1 ./docker/.
 ```
 
 **step3.Runnung Docker container**
