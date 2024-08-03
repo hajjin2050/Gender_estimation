@@ -10,7 +10,6 @@ RUN apt-get -o Dir::Cache::Archives="/tmp/apt" -y update && \
 
 # 필요한 Python 패키지 설치
 COPY requirements.txt .
-RUN pip install -r requirements.txt
 
 # 작업 디렉토리 설정
 WORKDIR /workspace
@@ -19,7 +18,10 @@ WORKDIR /workspace
 COPY . /workspace
 
 # MLflow 서버 시작 스크립트 추가
+
+WORKDIR /workspace
 RUN chmod +x /workspace/start_mlflow_server.sh
+RUN pip install -r requirements.txt
 
 # CMD 명령어 설정: MLflow 서버를 백그라운드에서 실행하고 bash 쉘을 시작
 CMD ["/bin/bash", "-c", "/workspace/start_mlflow_server.sh & bash"]
