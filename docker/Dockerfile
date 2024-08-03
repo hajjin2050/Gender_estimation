@@ -1,5 +1,11 @@
 # 베이스 이미지 설정
 FROM pytorch/pytorch:2.1.0-cuda11.8-cudnn8-runtime 
+# Create a temporary directory with appropriate permissions
+RUN mkdir -p /tmp/apt && chmod 1777 /tmp/apt
+
+# Update the system packages and install necessary packages
+RUN apt-get -o Dir::Cache::Archives="/tmp/apt" -y update && \
+    apt-get -o Dir::Cache::Archives="/tmp/apt" install -y git libgl1-mesa-glx libglib2.0-0
 
 # 시스템 패키지 업데이트 및 필요한 패키지 설치
 RUN apt-get -y update && apt-get install -y git libgl1-mesa-glx libglib2.0-0
@@ -9,9 +15,10 @@ RUN pip install mlflow==2.14.3 numpy==2.0.1 opencv_python==4.10.0.84 pandas==2.2
 
 # 작업 디렉토리 설정
 WORKDIR /workspace
+COPY . . 
 
 # Git 리포지토리 클론 (리포지토리 URL을 실제 URL로 변경해야 합니다)
-RUN git clone https://github.com/hajjin2050/Gender_estimation.git .
+# RUN git clone https://github.com/hajjin2050/Gender_estimation.git .
 
 # MLflow 서버 시작 스크립트 추가
 # COPY ./start_mlflow_server.sh /workspace/start_mlflow_server.sh
