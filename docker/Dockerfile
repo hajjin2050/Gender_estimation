@@ -14,7 +14,7 @@ RUN pip install mlflow==2.14.3 numpy opencv_python panda pillow timm ray scikit_
 
 # 작업 디렉토리 설정
 WORKDIR /workspace
-COPY ./* /workspace
+COPY . /workspace
 
 # MLflow 서버 시작 스크립트 추가
 RUN chmod +x /workspace/start_mlflow_server.sh

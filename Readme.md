@@ -38,7 +38,7 @@ docker build -t hajjin_like_spacevision:v1 ./docker/.
 **step3.Runnung Docker container**
 
 ```
-docker run -it --gpus all --ipc==host -v ./:/data --name hajjin_estimation  hajjin_like_spacevision:v1
+docker run -it --gpus all --ipc=host -v ./:/data --name hajjin_estimation  hajjin_like_spacevision:v1
 ./start_mlflow_server.sh &
 ```
 
