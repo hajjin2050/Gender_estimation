@@ -1,5 +1,5 @@
 # 베이스 이미지 설정
-FROM pytorch/pytorch:2.1.0-cuda11.8-cudnn8-runtime 
+FROM pytorch/pytorch:2.1.2-cuda11.8-cudnn8-devel
 # Create a temporary directory with appropriate permissions
 RUN mkdir -p /tmp/apt && chmod 1777 /tmp/apt
 
@@ -15,7 +15,7 @@ RUN pip install mlflow==2.14.3 numpy==2.0.1 opencv_python==4.10.0.84 pandas==2.2
 
 # 작업 디렉토리 설정
 WORKDIR /workspace
-COPY . . 
+COPY . .
 
 # Git 리포지토리 클론 (리포지토리 URL을 실제 URL로 변경해야 합니다)
 # RUN git clone https://github.com/hajjin2050/Gender_estimation.git .
