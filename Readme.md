@@ -32,7 +32,7 @@ cd Gender_estimation
 **step2**.Building Docker image
 
 ```
-docker build -t hajjin_like_spacevision:v1 ./docker/.
+docker build -t hajjin_like_spacevision:v1 .
 ```
 
 **step3.Runnung Docker container**
