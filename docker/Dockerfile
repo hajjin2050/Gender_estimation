@@ -19,7 +19,6 @@ WORKDIR /workspace
 COPY . /workspace
 
 # MLflow 서버 시작 스크립트 추가
-COPY start_mlflow_server.sh /workspace/start_mlflow_server.sh
 RUN chmod +x /workspace/start_mlflow_server.sh
 
 # CMD 명령어 설정: MLflow 서버를 백그라운드에서 실행하고 bash 쉘을 시작
