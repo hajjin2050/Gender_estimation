@@ -44,7 +44,7 @@ docker run -it --gpus all --ipc=host -v ./:/data --name hajjin_estimation  hajji
 
 ## 3.데이터 셋
 
-데이터 다운로드 : https://drive.google.com/drive/folders/1bK9smyonsrmWmfTBlwVwHPBtpiChTqan?usp=drive_link
+구축된 학습 데이터 다운로드 : https://drive.google.com/drive/folders/1bK9smyonsrmWmfTBlwVwHPBtpiChTqan?usp=drive_link
 
 * **Train Dataset** :
 
@@ -72,7 +72,7 @@ docker run -it --gpus all --ipc=host -v ./:/data --name hajjin_estimation  hajji
 ### 4_1.Train
 
 ```
-python tools/train.py --config /workspace/config/config_resnet101.json
+python tools/train.py --config /workspace/config/config_resnet101.json --data_dir /path/your/dataset
 ```
 
 #### 구성
@@ -106,7 +106,7 @@ python tools/train.py --config /workspace/config/config_resnet101.json
 ### 4_2.Test
 
 ````
-python test.py --config /workspace/config/config_efficientNetB5.json --model /path/to/trained_model.pth --test_dir /path/to/test_dataset_directory
+python tools/test.py --config /workspace/config/config_efficientNetB5.json --model /path/to/trained_model.pth --test_dir /path/to/test_dataset_directory
 ````
 
 #### 구성
@@ -129,7 +129,7 @@ python test.py --config /workspace/config/config_efficientNetB5.json --model /pa
 ### 4_3.Inference
 
 ```
-python inference.py --config /workspace/config/config_efficientNetB5.json --model /path/to/trained_model.pth --input /path/to/input_image_or_directory
+python tools/inference.py --config /workspace/config/config_efficientNetB5.json --model /path/to/trained_model.pth --input /path/to/input_image_or_directory
 ```
 
 #### 구성
