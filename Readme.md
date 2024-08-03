@@ -44,6 +44,8 @@ docker run -it --gpus all --ipc==host -v ./:/data --name hajjin_estimation  hajj
 
 ## 3.데이터 셋
 
+데이터 다운로드 : https://drive.google.com/drive/folders/1bK9smyonsrmWmfTBlwVwHPBtpiChTqan?usp=drive_link
+
 * **Train Dataset** :
 
   data/PETA_gender_classification_train.csv 참조

@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 
+# 스키마 추출 함수
 def extract_gender_from_path(file_path: str) -> str:
     """
     파일 경로에서 성별 정보를 추출합니다.

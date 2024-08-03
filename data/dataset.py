@@ -5,10 +5,11 @@ from mlflow.entities import Dataset
 
 from data.dataset_source import DatasetSource
 
+# 커스텀 데이터 셋 코드(스키마 생성, 데이터 셋 정보 추출)
 class CustomDataset(Dataset):
     def __init__(self, source: DatasetSource, name: Optional[str] = None, dataset_type: Optional[str] = None):
         """
-        CustomDataset 초기화 메서드.
+        CustomDataset 초기화
 
         [input]
         source : DatasetSource
@@ -27,7 +28,7 @@ class CustomDataset(Dataset):
 
     def _compute_digest(self) -> str:
         """
-        데이터셋 소스의  계산.
+        데이터셋 기본정보.
 
         [input]
         None

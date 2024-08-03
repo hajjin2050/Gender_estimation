@@ -9,6 +9,7 @@ import mlflow
 
 from data.grad_cam import GradCAM, overlay_heatmap_on_image
 
+# Confusioin Matrix 관련 함수
 def save_confusion_matrix(cm_buf: np.ndarray, run_dir: str, epoch: int) -> None:
     """
     Confusion Matrix 생성, MLflow에 저장.
@@ -38,9 +39,10 @@ def save_confusion_matrix(cm_buf: np.ndarray, run_dir: str, epoch: int) -> None:
     mlflow.log_image(image, cm_filename)
     return cm_filepath
 
+# MLflow 로깅 함수
 def log_mlflow_params(config: dict) -> None:
     """
-    모델 학습에 필요하이퍼 파라미터를 MLflow logging.
+    모델 파라미터 MLflow logging.
     ----------
     [input]
     config : dict
@@ -61,9 +63,11 @@ def log_mlflow_params(config: dict) -> None:
     }
     mlflow.log_params(params)
 
+# MLflow 로깅 함수
+
 def log_mlflow_metrics(metrics: dict, step: int) -> None:
     """
-    train,validation에서 평가하는 지표 값을 MLflow logging.
+    train,validation 학습 지표 값 MLflow logging.
     ----------
     [input]
     metrics : dict
@@ -77,9 +81,10 @@ def log_mlflow_metrics(metrics: dict, step: int) -> None:
     """  
     mlflow.log_metrics(metrics, step=step)
 
+#  MLflow 로깅 함수
 def log_mlflow_images(inputs: torch.Tensor, model: torch.nn.Module, grad_cam: GradCAM, run_dir: str, epoch: int) -> None:
     """
-    GradCAM 히트맵 이미지를 생성하고 MLflow logging.
+    GradCAM 히트맵 이미지  MLflow logging.
     ----------
     [input]
     inputs : torch.Tensor

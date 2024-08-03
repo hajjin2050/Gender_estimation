@@ -12,9 +12,10 @@ import pandas as pd
 
 sys.path.append("/workspace")
 
+#모델 클래스 로드 함수
 def load_model_class(model_name: str) -> type:
     """
-    모델 모듈에서 모델 로드
+    모델 클래스 로드
     -------------
     input : model_name(Config['model_name']) 
     output : model_class(timm활용)
@@ -26,9 +27,10 @@ def load_model_class(model_name: str) -> type:
     model_class = getattr(module, class_name)
     return model_class
 
+#모델 로드 함수
 def load_model(model_path: str, model_class: type, device: torch.device) -> torch.nn.Module:
     """
-    모델을 로드함
+    모델 로드
     -------------
     input : 
         model_path: str, 모델 파일 경로
@@ -43,9 +45,10 @@ def load_model(model_path: str, model_class: type, device: torch.device) -> torc
     model.eval()
     return model
 
+# 이미지 전처리 함수
 def preprocess_image(image_path: str) -> torch.Tensor:
     """
-    이미지를 전처리함
+    Resize, Normalize, ToTensor 적용
     -------------
     input : image_path(str) 이미지 파일 경로
     output : 전처리된 이미지 텐서
@@ -61,9 +64,10 @@ def preprocess_image(image_path: str) -> torch.Tensor:
     image = preprocess(image).unsqueeze(0)
     return image
 
+# 모델 추론 함수
 def predict(model: torch.nn.Module, image_tensor: torch.Tensor, device: torch.device) -> np.ndarray:
     """
-    모델을 사용하여 이미지를 예측함
+    이미지(gt없음) 추론
     -------------
     input : 
         model: torch.nn.Module, 학습된 모델
@@ -78,9 +82,10 @@ def predict(model: torch.nn.Module, image_tensor: torch.Tensor, device: torch.de
     probabilities = torch.nn.functional.softmax(output[0], dim=0)
     return probabilities.cpu().numpy()
 
+#메인 함수
 def main(config_path: str, model_path: str, input_path: str):
     """
-    메인 함수
+    테스트에 필요한 구성  파일 경로 입력
     -------------
     input : 
         config_path: str, 구성 파일 경로

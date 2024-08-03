@@ -4,9 +4,10 @@ import torchvision.transforms as transforms
 from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
 
+# 데이터 로더 함수
 def get_data_loaders(data_dir: str, batch_size: int = 32, input_size: tuple = (224, 224)) -> tuple:
     """
-    사전 준비된 train, val 데이터 셋 경로를 통해 데이터 로더 정의.
+    사전 준비된 train, val 파일을 통해 데이터 로더 정의.
     ----------
     [input]
     data_dir : str

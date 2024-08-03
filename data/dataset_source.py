@@ -1,5 +1,6 @@
 import json
 
+# 데이터 소스 코드
 class DatasetSource:
     """
     데이터셋 소스 관리 클래스.
@@ -11,7 +12,7 @@ class DatasetSource:
     """
     def __init__(self, source: str):
         """
-        DatasetSource 초기화 메서드:
+        DatasetSource 초기화:
         [input]
         source : str
             데이터셋 소스 경로 또는 위치

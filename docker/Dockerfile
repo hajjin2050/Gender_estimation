@@ -14,7 +14,7 @@ RUN pip install mlflow==2.14.3 numpy opencv_python panda pillow timm ray scikit_
 
 # 작업 디렉토리 설정
 WORKDIR /workspace
-COPY . .
+COPY . /workspace
 
 # Git 리포지토리 클론 (리포지토리 URL을 실제 URL로 변경해야 합니다)
 # RUN git clone https://github.com/hajjin2050/Gender_estimation.git .
