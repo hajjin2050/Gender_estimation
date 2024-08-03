@@ -13,7 +13,8 @@
         },
         "epochs": {
             "type": "choice",
-            "values": [10, 20, 30]
+            "values": [10],
+            "desc":"max_epoch"
         },
         "batch_size": {
             "type": "choice",

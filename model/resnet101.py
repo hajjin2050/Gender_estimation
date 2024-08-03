@@ -1,3 +1,5 @@
+# model/resnet101.py
+
 import timm
 from torch import nn
 
@@ -9,7 +11,7 @@ class resnet101(nn.Module):
             nn.Dropout(drop_rate),
             nn.Linear(self.model.num_features, num_classes)
         )
-        self.grad_cam_layer = self.model.features  # Grad-CAM에 사용할 레이어를 지정
+        self.grad_cam_layer = self.model.layer4  # Grad-CAM에 사용할 레이어를 지정
 
     def forward(self, x):
         return self.model(x)

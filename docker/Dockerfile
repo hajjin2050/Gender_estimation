@@ -5,7 +5,7 @@ FROM pytorch/pytorch:2.1.0-cuda11.8-cudnn8-runtime
 RUN apt-get update && apt-get install -y git libgl1-mesa-glx libglib2.0-0
 
 # 필요한 Python 패키지 설치
-RUN pip install mlflow==2.14.3 numpy==2.0.1 opencv_python==4.10.0.84 pandas==2.2.2 pillow==10.4.0 timm==1.0.8 ray==2.33.0 scikit_learn==1.5.1 seaborn==0.13.2
+RUN pip install mlflow==2.14.3 numpy==2.0.1 opencv_python==4.10.0.84 pandas==2.2.2 pillow==10.4.0 timm==1.0.8 ray==2.33.0 scikit_learn==1.5.1 seaborn==0.13.2 openpyxl
 
 # 작업 디렉토리 설정
 WORKDIR /workspace

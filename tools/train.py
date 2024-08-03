@@ -219,16 +219,20 @@ class Trainable(tune.Trainable):
         mlflow.set_experiment(config["mlflow"]["experiment_name"])
         self.run = None
         self.grad_cam = GradCAM(self.model, self.model.grad_cam_layer)
-        
         # Run directory 생성
-        self.run_dir = f"/workspace/runs/{self.run_name}"
+        self.run_dir = f"/workspace/Gender_estimation/runs/{self.run_name}"
         os.makedirs(self.run_dir, exist_ok=True)
-
+        self.max_epochs = config["epochs"]
         # Config 파일 저장
         config_path = os.path.join(self.run_dir, "config.json")
         with open(config_path, 'w') as f:
             json.dump(config, f, indent=4)
-
+            
+        self.best_val_f1 = 0
+        self.best_model_path = None
+        self.patience = 5  # Early Stopping patience
+        self.no_improvement_epochs = 0  # 초기화
+        
     def step(self) -> dict:
         """
         Train&valdiation 스텝 실행
@@ -263,14 +267,17 @@ class Trainable(tune.Trainable):
                 "val_f1": val_f1
             }
             log_mlflow_metrics(metrics, step=self.iteration)
-
-            if val_f1 > getattr(self, "best_val_f1", 0):
+            
+            if val_f1 > self.best_val_f1:
                 self.best_val_f1 = val_f1
-                self.best_model_path = f"{self.run_dir}/model_epoch_{self.iteration+1}.pth"
+                self.best_model_path = os.path.join(self.run_dir, f"model_epoch_{self.iteration+1}.pth")
                 torch.save({
                     "model_state_dict": self.model.state_dict(),
                     "optimizer_state_dict": self.optimizer.state_dict(),
                 }, self.best_model_path)
+                self.no_improvement_epochs = 0
+            else:
+                self.no_improvement_epochs += 1
 
             cm_filename = save_confusion_matrix(cm_buf, self.run_dir, self.iteration)
             mlflow.log_artifact(cm_filename, artifact_path="confusion_matrix")
@@ -281,21 +288,30 @@ class Trainable(tune.Trainable):
             log_mlflow_images(inputs, self.model, self.grad_cam, self.run_dir, self.iteration)
 
             # 로그 파일에 기록
-            log_path = os.path.join(self.run_dir, f"epoch_{self.iteration+1}_metrics.log")
-            with open(log_path, 'w') as log_file:
-                log_file.write(json.dumps(metrics, indent=4))
+            log_path = os.path.join(self.run_dir, "metrics.log")
+            with open(log_path, 'a') as log_file:
+                log_file.write(f"Epoch {self.iteration+1} - " + json.dumps(metrics) + "\n")
+
 
             print(f"Epoch {self.iteration+1}/{self.config['epochs']} - "
                 f"Train Loss: {train_loss:.4f}, Train Precision: {train_precision:.4f}, Train Recall: {train_recall:.4f}, Train F1: {train_f1:.4f} "
                 f"Val Loss: {val_loss:.4f}, Val Precision: {val_precision:.4f}, Val Recall: {val_recall:.4f}, Val F1: {val_f1:.4f}")
+            
+            if self.no_improvement_epochs >= self.patience:
+                print("Early stopping triggered.")
+                mlflow.end_run()
+                return {"done": True, "best_model_path": self.best_model_path}
 
-            return metrics
+            return {**metrics, "best_model_path": self.best_model_path}
 
         except Exception as e:
             print(f"Exception occurred: {e}")
             mlflow.end_run(status="FAILED")
             raise e
-
+        
+    def get_best_model_path(self):
+        return self.best_model_path
+    
     def cleanup(self):
         if self.run is not None:
             mlflow.end_run()
@@ -329,20 +345,21 @@ class Trainable(tune.Trainable):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a model with Ray Tune")
-    parser.add_argument("--config", type=str, default="/workspace/config/config_efficientNetB5.json", help="Path to the JSON config file")
+    parser.add_argument("--config", type=str, default="/workspace/Gender_estimation/config/config_efficientNetB5.json", help="Path to the JSON config file")
     args = parser.parse_args()
 
     config = load_config(args.config)
-
-    scheduler = ASHAScheduler(
-        max_t=20,
-        grace_period=5,
-        reduction_factor=2
-    )
-
+    
     tune_config = create_tune_config(config["tune_params"])
     tune_config["model_name"] = config["model_name"]
     tune_config["mlflow"] = config["mlflow"]
+
+    scheduler = ASHAScheduler(
+        max_t=config["tune_params"]["epochs"]["values"][0],
+        grace_period=1,
+        reduction_factor=2
+    )
+
 
     analysis = tune.run(
         Trainable,
@@ -354,8 +371,9 @@ if __name__ == "__main__":
         scheduler=scheduler,
         name="tune_gender_classifier"
     )
-
+    
     best_trial = analysis.get_best_trial(metric="val_f1", mode="max")
-    best_run_dir = f"runs/{best_trial.run_id}"
+    best_model_path = best_trial.last_result["best_model_path"]
+    best_run_dir = os.path.dirname(best_model_path)
     print(f"Best run directory: {best_run_dir}")
     print(f"Best config: {best_trial.config}")
