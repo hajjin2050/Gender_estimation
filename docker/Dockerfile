@@ -7,6 +7,10 @@ RUN mkdir -p /tmp/apt && chmod 1777 /tmp/apt
 RUN apt-get -o Dir::Cache::Archives="/tmp/apt" -y update && \
     apt-get -o Dir::Cache::Archives="/tmp/apt" install -y git libgl1-mesa-glx libglib2.0-0
 
+# 시간대 설정 (Asia/Seoul 예시)
+ENV TZ=Asia/Seoul
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # 시스템 패키지 업데이트 및 필요한 패키지 설치
 RUN apt-get -y update && apt-get install -y git libgl1-mesa-glx libglib2.0-0
 

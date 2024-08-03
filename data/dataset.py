@@ -1,9 +1,9 @@
-# dataset.py
-import hashlib
-import json
-from mlflow.entities import Dataset
-from data.dataset_source import DatasetSource
 from typing import Optional, Dict, Any
+import hashlib
+
+from mlflow.entities import Dataset
+
+from data.dataset_source import DatasetSource
 
 class CustomDataset(Dataset):
     def __init__(self, source: DatasetSource, name: Optional[str] = None, dataset_type: Optional[str] = None):
@@ -27,14 +27,14 @@ class CustomDataset(Dataset):
 
     def _compute_digest(self) -> str:
         """
-        데이터셋 소스의 다이제스트를 계산합니다.
+        데이터셋 소스의  계산.
 
         [input]
         None
 
         [output]
         str
-            데이터셋 소스의 다이제스트.
+            .
         -------
         """
         hasher = hashlib.md5()
@@ -43,14 +43,14 @@ class CustomDataset(Dataset):
 
     def to_dict(self) -> Dict[str, str]:
         """
-        데이터셋 정보를 딕셔너리로 반환합니다.
+        데이터셋 정보를 딕셔너리로 반환
 
         [input]
         None
 
         [output]
         dict
-            데이터셋 정보 딕셔너리.
+            데이터셋 정보 딕셔너리
         -------
         """
         return {
@@ -68,14 +68,14 @@ class CustomDataset(Dataset):
     @property
     def schema(self) -> Optional[Dict[str, Any]]:
         """
-        데이터셋 스키마를 반환합니다.
+        데이터셋 스키마 반환
 
         [input]
         None
 
         [output]
         dict
-            데이터셋 스키마.
+            데이터셋 스키마
         -------
         """
         schema = {

@@ -1,5 +1,3 @@
-# model/resnet101.py
-
 import timm
 from torch import nn
 

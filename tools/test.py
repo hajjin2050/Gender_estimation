@@ -1,15 +1,17 @@
 import sys
-sys.path.append("/workspace")
 import os
 import json
-import torch
 import argparse
 import importlib
+
 import numpy as np
+import torch
 from PIL import Image
 from torchvision import transforms
 import pandas as pd
 from sklearn.metrics import precision_recall_fscore_support
+
+sys.path.append("/workspace")
 
 def load_model_class(model_name: str) -> type:
     """

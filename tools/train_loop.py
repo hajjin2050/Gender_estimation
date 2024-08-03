@@ -1,11 +1,7 @@
 import torch
 import torch.nn.functional as F
+
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
-from PIL import Image
-import io
 
 def train_one_epoch(model: torch.nn.Module, device: torch.device, train_loader: torch.utils.data.DataLoader, optimizer: torch.optim.Optimizer) -> tuple:
     """
